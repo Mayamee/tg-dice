@@ -34,10 +34,14 @@ const rollDiceWithRetries = async (client, peer) => {
     attempt++;
 
     if (isWinningRoll(rollValue)) {
+      console.log("Winning reroll:", rollValue);
       break;
+    } else {
+      console.log("Losing reroll", rollValue);
     }
 
     if (attempt >= maxAttempts) {
+      console.log("Max reroll attempts reached:", rollValue);
       break;
     }
 
@@ -65,6 +69,7 @@ const rollDiceWithRetries = async (client, peer) => {
   // Основной обработчик событий
   client.addEventHandler(async ({ message: msg }) => {
     const peer = msg.peerId;
+
     if (!isUntouchedDice(msg)) {
       return;
     }
@@ -72,7 +77,11 @@ const rollDiceWithRetries = async (client, peer) => {
     const initialRoll = msg.media.value || 0;
 
     if (isWinningRoll(initialRoll)) {
+      console.log("Winning roll:", initialRoll);
+
       return;
+    } else {
+      console.log("Losing roll, retry will be requested:", initialRoll);
     }
 
     // Удаляем первый неудачный бросок и пробуем повторить
